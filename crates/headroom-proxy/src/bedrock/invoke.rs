@@ -63,7 +63,7 @@ use crate::proxy::AppState;
 // `Extension<AuthMode>` so the middleware-supplied value is the
 // single source of truth — handler does NOT re-classify; that
 // would risk drift from the middleware's resolution + WARN log.
-use headroom_core::auth_mode::AuthMode;
+use optimiser_core::auth_mode::AuthMode;
 
 use crate::bedrock::vendor::is_anthropic_model_id;
 
@@ -433,7 +433,7 @@ fn run_anthropic_compression(
         body,
         state.config.compression_mode,
         state.config.cache_control_auto_frozen,
-        headroom_core::auth_mode::AuthMode::OAuth,
+        optimiser_core::auth_mode::AuthMode::OAuth,
         request_id,
     );
     match outcome {

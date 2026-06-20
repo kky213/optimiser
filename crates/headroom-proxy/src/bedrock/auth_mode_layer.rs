@@ -12,7 +12,7 @@
 //! middleware. The middleware:
 //!
 //! 1. Classifies the inbound headers via
-//!    [`headroom_core::auth_mode::classify`].
+//!    [`optimiser_core::auth_mode::classify`].
 //! 2. **Asserts** the result is [`AuthMode::OAuth`] under the Bedrock
 //!    policy matrix. AWS SigV4 is an `Authorization` value that
 //!    isn't `Bearer ...` — F1's classifier already routes that to
@@ -52,7 +52,7 @@ use axum::extract::Request;
 use axum::middleware::Next;
 use axum::response::Response;
 
-use headroom_core::auth_mode::{classify, AuthMode};
+use optimiser_core::auth_mode::{classify, AuthMode};
 
 /// Inspect the inbound headers, classify the auth mode under
 /// Bedrock policy (always [`AuthMode::OAuth`], with a loud WARN

@@ -3,17 +3,17 @@ requires = ["maturin>=1.5,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "headroom-ai"
-version = "0.26.0"
-description = "The Context Optimization Layer for LLM Applications - Cut costs by 50-90%"
+name = "optimiser-ai"
+version = "1.0.0"
+description = "Optimiser - AI Token Saver. Compress LLM context by 55-80%, persistent memory, live savings dashboard."
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
 authors = [
-    { name = "Headroom Contributors" }
+    { name = "Optimiser Contributors" }
 ]
 maintainers = [
-    { name = "Headroom Contributors" }
+    { name = "Optimiser Contributors" }
 ]
 keywords = [
     "llm",
@@ -254,22 +254,16 @@ dev = [
 ]
 # All optional dependencies (everything you need)
 all = [
-    "headroom-ai[proxy,code,ml,memory,relevance,image,reports,otel,evals,voice,html,benchmark,mcp,spreadsheet]",
+    "optimiser-ai[proxy,code,ml,memory,relevance,image,reports,otel,evals,voice,html,benchmark,mcp,spreadsheet]",
 ]
 
 [project.scripts]
-headroom = "headroom.cli:main"
+optimiser = "optimiser.cli:main"
+headroom = "optimiser.cli:main"
 
 [project.urls]
-Homepage = "https://headroom-docs.vercel.app"
-Documentation = "https://headroom-docs.vercel.app/docs"
+Homepage = "https://github.com/chopratejas/headroom"
 Repository = "https://github.com/chopratejas/headroom"
-Issues = "https://github.com/chopratejas/headroom/issues"
-Changelog = "https://github.com/chopratejas/headroom/blob/main/CHANGELOG.md"
-# llms.txt convention (llmstxt.org) — point AI agents / LLM crawlers
-# at the auto-generated docs index so they can resolve install paths
-# and entry points without a follow-up fetch.
-"AI / LLM Index" = "https://headroom-docs.vercel.app/llms.txt"
 
 # Maturin builds a single wheel containing both the Python source under
 # `headroom/` AND the compiled Rust extension `headroom/_core.so` (cdylib
@@ -305,11 +299,11 @@ include = [
     { path = "NOTICE", format = "sdist" },
 ]
 python-source = "."
-module-name = "headroom._core"
+module-name = "optimiser._core"
 # The cdylib source lives under `crates/headroom-py`. Maturin invokes
 # `cargo build` with this manifest to produce `_core.cdylib`, then injects
 # the resulting `.so` into the wheel at `headroom/_core.so`.
-manifest-path = "crates/headroom-py/Cargo.toml"
+manifest-path = "crates/optimiser-py/Cargo.toml"
 features = ["extension-module"]
 # Forbid building without the cdylib feature — bare `cargo build` won't
 # produce a usable Python extension. Maturin's default `bindings` is "pyo3"
@@ -337,7 +331,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["headroom"]
+known-first-party = ["optimiser"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -353,33 +347,33 @@ ignore_missing_imports = true
 # Per-module overrides for modules with dynamic typing patterns
 [[tool.mypy.overrides]]
 module = [
-    "headroom.proxy.server",
-    "headroom.proxy.cost",
-    "headroom.proxy.prometheus_metrics",
-    "headroom.proxy.semantic_cache",
-    "headroom.proxy.rate_limiter",
-    "headroom.proxy.request_logger",
-    "headroom.proxy.helpers",
-    "headroom.integrations.langchain",
-    "headroom.integrations.mcp",
-    "headroom.ccr.mcp_server",
-    "headroom.relevance.embedding",
-    "headroom.reporting.generator",
+    "optimiser.proxy.server",
+    "optimiser.proxy.cost",
+    "optimiser.proxy.prometheus_metrics",
+    "optimiser.proxy.semantic_cache",
+    "optimiser.proxy.rate_limiter",
+    "optimiser.proxy.request_logger",
+    "optimiser.proxy.helpers",
+    "optimiser.integrations.langchain",
+    "optimiser.integrations.mcp",
+    "optimiser.ccr.mcp_server",
+    "optimiser.relevance.embedding",
+    "optimiser.reporting.generator",
 ]
 disallow_untyped_defs = false
 
 [[tool.mypy.overrides]]
 module = [
-    "headroom.tokenizers.*",
-    "headroom.providers.litellm",
-    "headroom.providers.google",
+    "optimiser.tokenizers.*",
+    "optimiser.providers.litellm",
+    "optimiser.providers.google",
 ]
 disallow_untyped_defs = false
 warn_return_any = false
 
 # Handler mixins use self.* from HeadroomProxy via duck typing — mypy can't resolve these
 [[tool.mypy.overrides]]
-module = ["headroom.proxy.handlers.*"]
+module = ["optimiser.proxy.handlers.*"]
 disallow_untyped_defs = false
 ignore_errors = true
 
@@ -407,10 +401,10 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["headroom"]
+source = ["optimiser"]
 branch = true
 omit = [
-    "headroom/cli.py",
+    "optimiser/cli.py",
     "*/tests/*",
 ]
 

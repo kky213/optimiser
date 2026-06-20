@@ -24,7 +24,7 @@
 //! input. `model` comes from the axum path parameter (Bedrock vendor
 //! prefix is enforced upstream of the metric increment); `region`
 //! comes from `Config::bedrock_region`; `auth_mode` comes from the
-//! `headroom_core::auth_mode::AuthMode` enum (3 variants total).
+//! `optimiser_core::auth_mode::AuthMode` enum (3 variants total).
 //! There is no path where a malicious client can drive label
 //! cardinality unbounded — see `bedrock::invoke::handle_invoke` for
 //! the call site.

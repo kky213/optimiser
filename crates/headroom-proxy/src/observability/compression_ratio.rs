@@ -16,7 +16,7 @@
 //!   manifests — never a customer-controlled value.
 //! - `content_type` — the detection-tier output for the block
 //!   (`source_code`, `log`, `search_output`, `diff`, `text`, …).
-//!   Cardinality bounded by `headroom_core::transforms::ContentType`.
+//!   Cardinality bounded by `optimiser_core::transforms::ContentType`.
 //!
 //! Counter twin: `proxy_compression_rejected_by_token_check_total{strategy}`
 //! captures the "compressor ran but didn't shrink the token count"

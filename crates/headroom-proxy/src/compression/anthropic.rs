@@ -17,7 +17,7 @@ use crate::config::CacheControlAutoFrozen;
 /// `/v1/messages` request body, honouring the
 /// `cache_control_auto_frozen` config gate (PR-A4).
 ///
-/// This is a thin wrapper around [`headroom_core::compute_frozen_count`]
+/// This is a thin wrapper around [`optimiser_core::compute_frozen_count`]
 /// that returns `0` when the operator has disabled automatic
 /// derivation, regardless of the markers in `parsed`.
 ///
@@ -50,7 +50,7 @@ pub fn resolve_frozen_count(
         );
         return 0;
     }
-    let count = headroom_core::compute_frozen_count(parsed);
+    let count = optimiser_core::compute_frozen_count(parsed);
     tracing::debug!(
         request_id = %request_id,
         cache_control_auto_frozen = policy.as_str(),

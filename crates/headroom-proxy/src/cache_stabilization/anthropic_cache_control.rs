@@ -21,9 +21,9 @@
 //!    on an OAuth-bearing or subscription-bound request risks
 //!    looking like cache-evasion to the upstream and can trigger
 //!    subscription revocation. The caller MUST classify the
-//!    inbound auth mode via [`headroom_core::auth_mode::classify`]
+//!    inbound auth mode via [`optimiser_core::auth_mode::classify`]
 //!    and only call this function when the mode is
-//!    [`headroom_core::auth_mode::AuthMode::Payg`]. The caller
+//!    [`optimiser_core::auth_mode::AuthMode::Payg`]. The caller
 //!    emits a structured `event = "e3_skipped", reason =
 //!    "auth_mode"` log line on the non-PAYG path.
 //! 2. **Customer-placement-wins gate.** If *any* `cache_control`

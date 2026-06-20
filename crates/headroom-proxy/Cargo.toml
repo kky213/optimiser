@@ -40,7 +40,7 @@ url = "2"
 humantime = "2"
 bytesize = "1"
 tokio-util = { version = "0.7" }
-headroom-core = { path = "../headroom-core" }
+optimiser-core = { path = "../optimiser-core" }
 # Phase D PR-D1: native Bedrock InvokeModel route. SigV4 + AWS
 # default credential chain.
 aws-sigv4 = { workspace = true }

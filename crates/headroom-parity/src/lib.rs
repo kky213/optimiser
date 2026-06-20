@@ -189,7 +189,7 @@ impl TransformComparator for DiffCompressorComparator {
         input: &serde_json::Value,
         config: &serde_json::Value,
     ) -> Result<serde_json::Value> {
-        use headroom_core::transforms::{DiffCompressor, DiffCompressorConfig};
+        use optimiser_core::transforms::{DiffCompressor, DiffCompressorConfig};
 
         let content = input
             .as_str()
@@ -275,7 +275,7 @@ impl TransformComparator for TokenizerComparator {
         input: &serde_json::Value,
         _config: &serde_json::Value,
     ) -> Result<serde_json::Value> {
-        use headroom_core::tokenizer::{TiktokenCounter, Tokenizer};
+        use optimiser_core::tokenizer::{TiktokenCounter, Tokenizer};
         let text = input
             .as_str()
             .context("tokenizer fixture input must be a JSON string")?;
@@ -308,7 +308,7 @@ impl TransformComparator for SmartCrusherComparator {
         input: &serde_json::Value,
         config: &serde_json::Value,
     ) -> Result<serde_json::Value> {
-        use headroom_core::transforms::smart_crusher::{SmartCrusher, SmartCrusherConfig};
+        use optimiser_core::transforms::smart_crusher::{SmartCrusher, SmartCrusherConfig};
 
         let content = input
             .get("content")
@@ -452,7 +452,7 @@ impl TransformComparator for ContentDetectorComparator {
         input: &serde_json::Value,
         _config: &serde_json::Value,
     ) -> Result<serde_json::Value> {
-        use headroom_core::transforms::detect_content_type;
+        use optimiser_core::transforms::detect_content_type;
 
         let content = input
             .as_str()

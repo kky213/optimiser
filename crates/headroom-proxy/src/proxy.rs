@@ -30,8 +30,8 @@ use crate::websocket::ws_handler;
 // site self-documenting. `AuthMode` is re-exported under the same
 // path for downstream handlers that read the value back out of
 // `req.extensions()` (Phase F PR-F2/F3/F4).
-use headroom_core::auth_mode::{classify as classify_auth_mode, AuthMode};
-use headroom_core::compression_policy::CompressionPolicy;
+use optimiser_core::auth_mode::{classify as classify_auth_mode, AuthMode};
+use optimiser_core::compression_policy::CompressionPolicy;
 
 /// Shared state passed to every handler.
 ///

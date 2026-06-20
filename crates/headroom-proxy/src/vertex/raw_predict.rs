@@ -143,7 +143,7 @@ pub(crate) async fn forward_vertex_request(
             &buffered,
             state.config.compression_mode,
             state.config.cache_control_auto_frozen,
-            headroom_core::auth_mode::AuthMode::OAuth,
+            optimiser_core::auth_mode::AuthMode::OAuth,
             &request_id,
         );
         match outcome {

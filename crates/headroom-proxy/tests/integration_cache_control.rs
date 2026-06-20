@@ -1,7 +1,7 @@
 //! Integration tests for the proxy-side cache_control resolver
 //! (PR-A4).
 //!
-//! The core walker `headroom_core::compute_frozen_count` is unit-
+//! The core walker `optimiser_core::compute_frozen_count` is unit-
 //! tested in `crates/headroom-core/tests/cache_control.rs`. This file
 //! exercises the proxy wrapper [`resolve_frozen_count`] which adds
 //! the configurability gate (`HEADROOM_PROXY_CACHE_CONTROL_AUTO_FROZEN`)

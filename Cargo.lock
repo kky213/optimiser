@@ -1865,44 +1865,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "headroom-core"
-version = "0.1.0"
-dependencies = [
- "aho-corasick",
- "blake3",
- "bytes",
- "criterion",
- "dashmap",
- "fastembed",
- "flate2",
- "hf-hub 0.4.3",
- "http 1.4.0",
- "magika",
- "md-5",
- "proptest",
- "rayon",
- "redis",
- "regex",
- "rusqlite",
- "serde",
- "serde_json",
- "sha2 0.10.9",
- "tempfile",
- "thiserror 1.0.69",
- "tiktoken-rs",
- "tokenizers",
- "toml",
- "tracing",
- "unidiff",
-]
-
-[[package]]
 name = "headroom-parity"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
- "headroom-core",
+ "optimiser-core",
  "serde",
  "serde_json",
  "thiserror 1.0.69",
@@ -1925,7 +1893,6 @@ dependencies = [
  "futures",
  "futures-util",
  "gcp_auth",
- "headroom-core",
  "http 1.4.0",
  "http-body-util",
  "humantime",
@@ -1933,6 +1900,7 @@ dependencies = [
  "hyper-util",
  "lru",
  "md-5",
+ "optimiser-core",
  "pin-project-lite",
  "prometheus",
  "proptest",
@@ -1952,16 +1920,6 @@ dependencies = [
  "url",
  "uuid",
  "wiremock",
-]
-
-[[package]]
-name = "headroom-py"
-version = "0.1.0"
-dependencies = [
- "cc",
- "headroom-core",
- "pyo3",
- "serde_json",
 ]
 
 [[package]]
@@ -2976,6 +2934,48 @@ name = "openssl-probe"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7c87def4c32ab89d880effc9e097653c8da5d6ef28e6b539d313baaacfbafcbe"
+
+[[package]]
+name = "optimiser-core"
+version = "1.0.0"
+dependencies = [
+ "aho-corasick",
+ "blake3",
+ "bytes",
+ "criterion",
+ "dashmap",
+ "fastembed",
+ "flate2",
+ "hf-hub 0.4.3",
+ "http 1.4.0",
+ "magika",
+ "md-5",
+ "proptest",
+ "rayon",
+ "redis",
+ "regex",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tempfile",
+ "thiserror 1.0.69",
+ "tiktoken-rs",
+ "tokenizers",
+ "toml",
+ "tracing",
+ "unidiff",
+]
+
+[[package]]
+name = "optimiser-py"
+version = "1.0.0"
+dependencies = [
+ "cc",
+ "optimiser-core",
+ "pyo3",
+ "serde_json",
+]
 
 [[package]]
 name = "option-ext"

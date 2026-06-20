@@ -1,0 +1,81 @@
+# Optimiser — Per-Tool Compression Profiles
+# Controls which compressor and ratio to use based on tool name or content type.
+# User overrides: ~/.optimiser/tool_profiles.yaml (merged on top of these defaults)
+
+profiles:
+
+  # Never compress tiny outputs — overhead exceeds savings
+  tiny:
+    triggers:
+      - token_count_lt: 150
+    strategy: none
+
+  # Bash command outputs — treat like logs (keep errors, drop verbose lines)
+  bash:
+    triggers:
+      - tool_name: bash
+      - tool_name: Bash
+    min_tokens: 300
+    strategy: log_compressor
+    ratio: moderate
+    always_keep_errors: true
+
+  # File reads — AST-aware code compression
+  read_file:
+    triggers:
+      - tool_name: Read
+      - tool_name: read
+      - tool_name: read_file
+    strategy: code_compressor
+    ratio: moderate
+    protect_first_lines: 10
+
+  # Search / grep results — keep file:line, drop redundant hits
+  search:
+    triggers:
+      - tool_name: Grep
+      - tool_name: grep
+      - tool_name: search
+      - tool_name: Search
+    strategy: search_compressor
+    ratio: aggressive
+    max_results_per_file: 3
+
+  # File listing — keep names, drop metadata columns
+  glob:
+    triggers:
+      - tool_name: Glob
+      - tool_name: glob
+      - tool_name: list_files
+      - tool_name: ls
+    strategy: search_compressor
+    ratio: moderate
+
+  # JSON API / tool outputs — statistical row compression
+  tool_results_json:
+    triggers:
+      - content_type: json
+    min_tokens: 500
+    strategy: smart_crusher
+    ratio: aggressive
+    protect_errors: true
+    protect_anomalies: true
+
+  # Git diffs — keep changed hunks, drop context padding
+  diff:
+    triggers:
+      - tool_name: diff
+      - content_starts_with: "diff --git"
+      - content_starts_with: "---"
+    strategy: diff_compressor
+    ratio: moderate
+
+  # Web fetch / URL content — extract text from HTML
+  web_fetch:
+    triggers:
+      - tool_name: WebFetch
+      - tool_name: web_fetch
+      - tool_name: fetch
+      - content_type: html
+    strategy: html_extractor
+    ratio: aggressive

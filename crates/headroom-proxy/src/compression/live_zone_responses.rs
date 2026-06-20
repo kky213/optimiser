@@ -32,9 +32,9 @@
 //! failing block reverts.
 
 use bytes::Bytes;
-use headroom_core::auth_mode::AuthMode as RequestAuthMode;
-use headroom_core::transforms::live_zone::DEFAULT_MODEL;
-use headroom_core::transforms::{
+use optimiser_core::auth_mode::AuthMode as RequestAuthMode;
+use optimiser_core::transforms::live_zone::DEFAULT_MODEL;
+use optimiser_core::transforms::{
     compress_openai_responses_live_zone, summarize_openai_responses_no_change_reason, BlockAction,
     LiveZoneError, LiveZoneOutcome,
 };

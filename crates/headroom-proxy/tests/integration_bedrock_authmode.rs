@@ -28,7 +28,7 @@ use axum::routing::post;
 use axum::Router;
 use bytes::Bytes;
 use common::start_proxy_with_state;
-use headroom_core::auth_mode::AuthMode;
+use optimiser_core::auth_mode::AuthMode;
 use headroom_proxy::AppState;
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};

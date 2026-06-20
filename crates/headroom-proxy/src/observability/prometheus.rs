@@ -55,7 +55,7 @@ use prometheus::{
     Encoder, HistogramOpts, HistogramVec, IntCounterVec, Opts, Registry, TextEncoder,
 };
 
-use headroom_core::auth_mode::AuthMode;
+use optimiser_core::auth_mode::AuthMode;
 
 /// Latency-histogram buckets in seconds. Chosen to discriminate
 /// across typical Bedrock latencies: cold-start (~1-2s), warm
