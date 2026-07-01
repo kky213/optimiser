@@ -37,8 +37,12 @@ APP_DATA     = BASE / "app_data.json"
 
 PROXY_URL  = "http://127.0.0.1:8787"
 PROXY_CMD  = ["optimiser", "proxy", "--port", "8787"]
-PROXY_ENV  = {**os.environ, "HEADROOM_TELEMETRY": "off",
-              "HEADROOM_UPDATE_CHECK": "off", "HF_HUB_OFFLINE": "1"}
+PROXY_ENV  = {**os.environ,
+              "HEADROOM_TELEMETRY":            "off",
+              "HEADROOM_UPDATE_CHECK":         "off",
+              "HF_HUB_OFFLINE":               "1",
+              "HEADROOM_SUBSCRIPTION_TRACKING": "off",
+              "NO_COLOR":                      "1"}
 NO_WINDOW  = 0x08000000  # Windows: suppress console popup
 
 # ── Colours ───────────────────────────────────────────────────────

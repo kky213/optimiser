@@ -1,44 +1,45 @@
 """
-Generate a side-by-side visual comparison image showing
-WITHOUT vs WITH Optimiser token counts for the same task.
+Generate comparison chart from test_report_result.json.
+100% local — no internet, no API.
+
+Run:  python make_comparison.py
 """
 
-from PIL import Image, ImageDraw, ImageFont
+import json
 import os
+from pathlib import Path
 
-# ── Data from real test run ───────────────────────────────────────
-RESULTS = [
-    {"task": "JSON: 150 search results", "without": 19970, "with_opt": 9967},
-    {"task": "JSON: 100 log entries",    "without": 11253, "with_opt": 4766},
-    {"task": "JSON: 80 file listing",    "without":  8820, "with_opt": 3347},
-]
-MODEL   = "claude-3-haiku  |  Bedrock ap-south-1"
-TOTAL_W = 40043
-TOTAL_C = 9791 + (19970 - 9967)  # real proxy numbers
-TOTAL_C = 18080  # 9967+4766+3347
-SAVED   = TOTAL_W - TOTAL_C
-PCT     = round(SAVED / TOTAL_W * 100, 1)
+from PIL import Image, ImageDraw, ImageFont
 
-# ── Style ────────────────────────────────────────────────────────
-W, H       = 1100, 700
+# ── Load results ──────────────────────────────────────────────────
+RESULT = Path(__file__).parent / "test_report_result.json"
+if not RESULT.exists():
+    print("Run test_report.py first to generate results.")
+    raise SystemExit(1)
+
+data    = json.loads(RESULT.read_text(encoding="utf-8"))
+tests   = [t for t in data["tests"] if not t.get("direct_error")]
+summary = data["summary"]
+
+# Up to 4 tests shown in chart
+tests = tests[:4]
+
+# ── Style ─────────────────────────────────────────────────────────
+W, H  = 1100, 160 + len(tests) * 140 + 120
 BG         = (15, 17, 23)
-CARD_W_BG  = (30, 34, 46)
-CARD_O_BG  = (30, 34, 46)
-RED        = (239, 68,  68)
-GREEN      = (34,  197, 94)
-BLUE       = (99,  102, 241)
-GOLD       = (251, 191, 36)
+DARK_GREY  = (51,  65,  85)
 WHITE      = (255, 255, 255)
 GREY       = (148, 163, 184)
-DARK_GREY  = (51,  65,  85)
+RED        = (239,  68,  68)
+GREEN      = (34,  197,  94)
+GOLD       = (251, 191,  36)
+BLUE       = (99,  102, 241)
 
-def load_font(size, bold=False):
-    font_paths = [
-        "C:/Windows/Fonts/consola.ttf",
-        "C:/Windows/Fonts/cour.ttf",
-        "C:/Windows/Fonts/arial.ttf",
-    ]
-    for p in font_paths:
+
+def load_font(size):
+    for p in ("C:/Windows/Fonts/consola.ttf",
+              "C:/Windows/Fonts/cour.ttf",
+              "C:/Windows/Fonts/arial.ttf"):
         if os.path.exists(p):
             try:
                 return ImageFont.truetype(p, size)
@@ -46,108 +47,98 @@ def load_font(size, bold=False):
                 pass
     return ImageFont.load_default()
 
-def rounded_rect(draw, xy, fill, radius=12):
-    x0, y0, x1, y1 = xy
-    draw.rounded_rectangle([x0, y0, x1, y1], radius=radius, fill=fill)
 
-def bar(draw, x, y, w, h, value, max_val, color, label, font_sm):
-    filled = int(w * value / max_val)
-    # Background track
-    draw.rounded_rectangle([x, y, x+w, y+h], radius=6, fill=DARK_GREY)
-    # Filled portion
-    if filled > 0:
-        draw.rounded_rectangle([x, y, x+filled, y+h], radius=6, fill=color)
-    # Label
-    draw.text((x + w + 12, y - 2), label, fill=WHITE, font=font_sm)
+def rr(draw, xy, fill, r=10):
+    draw.rounded_rectangle(xy, radius=r, fill=fill)
+
 
 # ── Build image ───────────────────────────────────────────────────
 img  = Image.new("RGB", (W, H), BG)
-draw = ImageDraw.Draw(img)
+d    = ImageDraw.Draw(img)
 
-f_title  = load_font(22, bold=True)
-f_head   = load_font(16, bold=True)
-f_body   = load_font(14)
-f_sm     = load_font(13)
-f_num    = load_font(28, bold=True)
-f_xs     = load_font(11)
+f_title = load_font(22)
+f_head  = load_font(16)
+f_body  = load_font(14)
+f_sm    = load_font(13)
+f_num   = load_font(28)
+f_xs    = load_font(11)
 
-# ── Header ────────────────────────────────────────────────────────
-draw.text((40, 24), "OPTIMISER  —  Token Comparison", fill=WHITE, font=f_title)
-draw.text((40, 54), f"Model: {MODEL}", fill=GREY, font=f_sm)
+# Header
+d.text((40, 22), "OPTIMISER — Token Compression Benchmark",
+       fill=WHITE, font=f_title)
+d.text((40, 52), "100% local  |  no API calls  |  no internet  |  pure SmartCrusher",
+       fill=GREY, font=f_sm)
+d.line([(40, 78), (W-40, 78)], fill=DARK_GREY, width=1)
 
-# Divider
-draw.line([(40, 80), (W-40, 80)], fill=DARK_GREY, width=1)
+# Column headers
+rr(d, [20, 88, 500, 116], (60, 20, 20))
+d.text((36, 94), "WITHOUT  Optimiser", fill=RED, font=f_head)
+rr(d, [520, 88, 1000, 116], (15, 50, 30))
+d.text((536, 94), "WITH  Optimiser", fill=GREEN, font=f_head)
 
-# ── Column headers ────────────────────────────────────────────────
-cx_w = 100   # WITHOUT column x-centre
-cx_o = 590   # WITH column x-centre
+MAX_T = max(t["direct_in"] for t in tests) * 1.05
 
-rounded_rect(draw, [cx_w - 80, 90, cx_w + 240, 118], fill=(60, 20, 20))
-draw.text((cx_w - 60, 95), "WITHOUT  Optimiser", fill=RED, font=f_head)
+row_y = 138
+for i, t in enumerate(tests):
+    y   = row_y + i * 140
+    wo  = t["direct_in"]
+    wi  = t["comp_local_in"]
+    pct = t["saved_pct"]
 
-rounded_rect(draw, [cx_o - 80, 90, cx_o + 230, 118], fill=(15, 50, 30))
-draw.text((cx_o - 60, 95), "WITH  Optimiser", fill=GREEN, font=f_head)
-
-# ── Per-task rows ─────────────────────────────────────────────────
-MAX_TOKENS = 22000
-row_y = 140
-
-for i, r in enumerate(RESULTS):
-    y = row_y + i * 140
-    task  = r["task"]
-    wo    = r["without"]
-    wi    = r["with_opt"]
-    saved = wo - wi
-    pct   = round(saved / wo * 100, 1)
-
-    # Task label
-    draw.text((40, y), task, fill=WHITE, font=f_head)
+    d.text((40, y), t["name"], fill=WHITE, font=f_head)
 
     # WITHOUT card
-    rounded_rect(draw, [40, y+26, 490, y+108], fill=(40, 22, 22))
-    draw.text((56, y+34), f"{wo:,}", fill=RED, font=f_num)
-    draw.text((56+120, y+46), "tokens", fill=GREY, font=f_sm)
-    bar(draw, 56, y+78, 400, 14, wo, MAX_TOKENS, RED, "", f_xs)
+    rr(d, [20, y+26, 490, y+108], (40, 22, 22))
+    d.text((36, y+32), f"{wo:,}", fill=RED, font=f_num)
+    d.text((36 + 130, y+44), "tokens", fill=GREY, font=f_sm)
+    fw = int(400 * wo / MAX_T)
+    d.rounded_rectangle([36, y+78, 36+400, y+92], radius=5, fill=DARK_GREY)
+    if fw: d.rounded_rectangle([36, y+78, 36+fw, y+92], radius=5, fill=RED)
 
-    # WITH card — bar proportional to wi (shorter = better)
-    rounded_rect(draw, [530, y+26, 980, y+108], fill=(17, 40, 27))
-    draw.text((546, y+34), f"{wi:,}", fill=GREEN, font=f_num)
-    draw.text((546+100, y+46), "tokens", fill=GREY, font=f_sm)
-    bar(draw, 546, y+78, 400, 14, wi, MAX_TOKENS, GREEN, "", f_xs)
+    # WITH card
+    rr(d, [510, y+26, 980, y+108], (17, 40, 27))
+    d.text((526, y+32), f"{wi:,}", fill=GREEN, font=f_num)
+    d.text((526 + 100, y+44), "tokens", fill=GREY, font=f_sm)
+    cw = int(400 * wi / MAX_T)
+    d.rounded_rectangle([526, y+78, 526+400, y+92], radius=5, fill=DARK_GREY)
+    if cw: d.rounded_rectangle([526, y+78, 526+cw, y+92], radius=5, fill=GREEN)
 
-    # Saved badge
-    rounded_rect(draw, [995, y+42, W-20, y+90], fill=(40, 35, 10))
-    draw.text((1003, y+48), f"-{pct}%", fill=GOLD, font=f_head)
-    draw.text((1003, y+68), f"saved", fill=GREY, font=f_xs)
+    # Badge
+    rr(d, [990, y+42, W-10, y+90], (40, 35, 10))
+    d.text((998, y+46), f"-{pct:.0f}%", fill=GOLD, font=f_head)
+    d.text((998, y+68), "saved",        fill=GREY, font=f_xs)
 
-# ── Divider ───────────────────────────────────────────────────────
-line_y = row_y + len(RESULTS) * 140 + 6
-draw.line([(40, line_y), (W-40, line_y)], fill=DARK_GREY, width=1)
+# Divider + totals
+ty   = row_y + len(tests) * 140 + 8
+d.line([(40, ty), (W-40, ty)], fill=DARK_GREY, width=1)
+ty  += 14
 
-# ── Totals row ────────────────────────────────────────────────────
-ty = line_y + 16
+tw = summary["total_direct_tokens"]
+tc = summary["total_compressed_tokens"]
+tp = summary["savings_pct"]
+cs = summary["input_cost_saved_usd"]
 
-draw.text((40, ty), "TOTAL (3 tasks, 1 real API call each)", fill=WHITE, font=f_head)
+d.text((40, ty), f"TOTAL ({len(tests)} tasks)", fill=WHITE, font=f_head)
 
-rounded_rect(draw, [40, ty+26, 490, ty+90], fill=(50, 20, 20))
-draw.text((56, ty+30), f"{TOTAL_W:,}", fill=RED, font=f_num)
-draw.text((56+160, ty+44), "tokens", fill=GREY, font=f_sm)
+rr(d, [20, ty+26, 490, ty+88], (50, 20, 20))
+d.text((36, ty+30), f"{tw:,}", fill=RED, font=f_num)
+d.text((36+160, ty+44), "tokens", fill=GREY, font=f_sm)
 
-rounded_rect(draw, [530, ty+26, 980, ty+90], fill=(17, 45, 27))
-draw.text((546, ty+30), f"{TOTAL_C:,}", fill=GREEN, font=f_num)
-draw.text((546+130, ty+44), "tokens", fill=GREY, font=f_sm)
+rr(d, [510, ty+26, 980, ty+88], (17, 45, 27))
+d.text((526, ty+30), f"{tc:,}", fill=GREEN, font=f_num)
+d.text((526+130, ty+44), "tokens", fill=GREY, font=f_sm)
 
-rounded_rect(draw, [995, ty+32, W-20, ty+84], fill=(50, 40, 5))
-draw.text((1003, ty+34), f"-{PCT}%", fill=GOLD, font=load_font(22, bold=True))
-draw.text((1003, ty+58), f"{SAVED:,} tkn", fill=GOLD, font=f_xs)
+rr(d, [990, ty+30, W-10, ty+88], (50, 40, 5))
+d.text((998, ty+32), f"-{tp:.0f}%",     fill=GOLD, font=load_font(22))
+d.text((998, ty+56), f"~${cs:.5f} saved", fill=GOLD, font=f_xs)
 
-# ── Footer ────────────────────────────────────────────────────────
-fy = H - 38
-draw.line([(40, fy-10), (W-40, fy-10)], fill=DARK_GREY, width=1)
-draw.text((40, fy),     "Cost without: $0.01001  |  Cost with: $0.00245  |  Saved: $0.00756 per run", fill=GREY, font=f_xs)
-draw.text((W-240, fy),  "github.com/kky213/optimiser", fill=BLUE, font=f_xs)
+# Footer
+fy = H - 36
+d.line([(40, fy-10), (W-40, fy-10)], fill=DARK_GREY, width=1)
+d.text((40, fy),    "Local build — no telemetry, no API, no cloud", fill=GREY, font=f_xs)
+d.text((W-280, fy), "github.com/kky213/optimiser",                  fill=BLUE, font=f_xs)
 
-# ── Save ─────────────────────────────────────────────────────────
-out = "C:/Projects/optimiser/comparison.png"
-img.save(out, dpi=(150, 150))
-print(f"Saved: {out}")
+# Save
+out = Path(__file__).parent / "comparison.png"
+img.save(str(out), dpi=(150, 150))
+print(f"Chart saved: {out}")

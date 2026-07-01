@@ -289,8 +289,8 @@ class ProxyConfig:
     pipeline_extensions: list[Any] = field(default_factory=list)
     discover_pipeline_extensions: bool = True
 
-    # Subscription Window Tracking (Anthropic OAuth accounts)
-    subscription_tracking_enabled: bool = True
+    # Subscription Window Tracking — disabled (local-only build, Bedrock backend)
+    subscription_tracking_enabled: bool = False
     subscription_poll_interval_s: int = 300
     subscription_active_window_s: int = 60
 
