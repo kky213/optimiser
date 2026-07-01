@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "optimiser-ai"
-version = "1.0.0"
+version = "0.27.0"
 description = "Optimiser - AI Token Saver. Compress LLM context by 55-80%, persistent memory, live savings dashboard."
 readme = "README.md"
 license = "Apache-2.0"
