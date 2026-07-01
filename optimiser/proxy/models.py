@@ -281,7 +281,7 @@ class ProxyConfig:
 
     # License / Usage Reporting
     license_key: str | None = None
-    license_cloud_url: str = "https://app.headroomlabs.ai"
+    license_cloud_url: str = "http://127.0.0.1:8787"  # local-only build
     license_report_interval: int = 300
 
     # Compression Hooks

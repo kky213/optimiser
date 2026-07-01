@@ -21,7 +21,7 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_CLOUD_URL = "https://api.headroomlabs.ai"
+_DEFAULT_CLOUD_URL = "http://127.0.0.1:8787"  # local-only build
 
 
 class HeadroomCallback:

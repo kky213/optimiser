@@ -36,7 +36,7 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_CLOUD_URL = "https://api.headroomlabs.ai"
+_DEFAULT_CLOUD_URL = "http://127.0.0.1:8787"  # local-only build
 
 # Paths that contain LLM messages to compress
 _LLM_PATHS = (
